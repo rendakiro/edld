@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>Generador Personajes Exploradores de lo Desconocido</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English&display=swap');
+    
+            body {
+                font-family: 'IM Fell English', serif;
+                background-color: #fdf6e3;
+                color: #3e2f1c;
+                padding: 2em;
+                max-width: 900px;
+                margin: auto;
+                background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            }
+    
+            h1 {
+                font-family: 'Uncial Antiqua', cursive;
+                text-align: center;
+                font-size: 2.4em;
+                margin-bottom: 1em;
+                color: #4b2e15;
+            }
+    
+            label {
+                font-weight: bold;
+                display: inline-block;
+                margin-top: 1em;
+                min-width: 140px;
+            }
+    
+            input[type="text"],
+            input[type="number"],
+            select,
+            textarea {
+                font-family: 'IM Fell English', serif;
+                font-size: 1em;
+                padding: 0.4em;
+                background-color: #fff8e1;
+                border: 1px solid #bfa97f;
+                width: 100%;
+                max-width: 350px;
+                box-sizing: border-box;
+                margin-bottom: 0.5em;
+            }
+    
+            textarea {
+                height: 200px;
+                width: 100%;
+                resize: vertical;
+            }
+    
+            input[type="button"] {
+                background-color: #7a583a;
+                color: #fff8e1;
+                border: none;
+                padding: 0.6em 1.2em;
+                font-size: 1em;
+                font-family: 'Uncial Antiqua', cursive;
+                cursor: pointer;
+                margin-top: 1em;
+                border-radius: 6px;
+            }
+    
+            input[type="button"]:hover {
+                background-color: #5c3d28;
+            }
+    
+            div {
+                margin-bottom: 1em;
+            }
+    
+            optgroup {
+                font-style: italic;
+            }
+    
+            #resultado {
+                background-color: #f8f1dc;
+                border: 1px solid #c4b28b;
+                padding: 1em;
+                white-space: pre-wrap;
+                font-family: monospace;
+                margin-top: 2em;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Generador de Personajes Exploradores de lo Desconocido</h1>
+        <p>Generador de personajes para el juego de rol Exploradores de lo Desconocido, basado en el sistema de D&D.</p>
+
+        <div>
+            <div>
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" value="" placeholder="Pon un nombre Molon" />
+            </div>
+            <div>
+                <label for="clases">Clase:</label>
+                <select id="clases" onchange="actualizar_armaduras()">
+                    <option value="1">Salvaje</option>
+                    <option value="2">Hobbit</option>
+                    <option value="3">Nomada</option>
+                    <option value="4">Gnomo</option>
+                    <option value="5">Barbaro</option>
+                    <option value="6">Elfo</option>
+                    <option value="7">Civilizado</option>
+                    <option value="8">Enano</option>
+                </select>
+            </div>
+            <div>
+                <label for="armor">Armadura:</label>                
+                <select id="armor">
+                    <option value="9">Sin armadura</option>
+                </select>
+            </div>
+            <div>
+                <label for="shield">Escudo</label>
+                <input type="checkbox" id="shield" value="1" onchange="comprobar_escudo()"/>
+            </div>
+            <label for="nivel">Nivel</label>
+            <input type="number" id="nivel" value="1" min="1" max="18" title="Introduce el nivel del personaje" placeholder="Nivel" />
+            <!-- <input type="button" id="generate_level" value="Generar" onclick="calcular_vida()" /> -->
+            <div>
+                <label for="weapon1">Arma</label>
+                <select id="weapon1">
+                    <optgroup label="Arma a distancia">
+                        <option value="6">Hacha de Mano</option>
+                        <option value="6">Arco Corto</option>
+                        <option value="6">Ballesta</option>
+                    </optgroup>
+                    <optgroup label="Arma cuerpo a cuerpo">
+                        <option value="8" selected>Espada Larga</option>
+                        <option value="8">Hacha de Batalla</option>
+                        <option value="8">Maza</option>
+                    </optgroup>
+                    <optgroup label="Arma a dos manos">
+                        <option value="10">Espada Bastarda</option>
+                        <option value="10">Hacha de Guerra</option>
+                        <option value="10">Maza de Guerra</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div id="weapon2_div">
+                <label for="weapon2">Arma Adiccional</label>
+                <select id="weapon2">
+                    <optgroup label="Arma a distancia">
+                        <option value="6">Hacha de Mano</option>
+                        <option value="6" selected>Arco Corto</option>
+                        <option value="6">Ballesta</option>
+                    </optgroup>
+                    <optgroup label="Arma cuerpo a cuerpo">
+                        <option value="8">Espada Larga</option>
+                        <option value="8">Hacha de Batalla</option>
+                        <option value="8">Maza</option>
+                    </optgroup>
+                    <optgroup label="Arma a dos manos">
+                        <option value="10">Espada Bastarda</option>
+                        <option value="10">Hacha de Guerra</option>
+                        <option value="10">Maza de Guerra</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <input type="button" id="generate" value="Generar Personaje" onclick="generar_personaje()" />
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="concepto">Generador Extendido</label>
+            </div>
+            <div>
+                <textarea id="resultado" rows="10" cols="50" readonly title="Resultado del personaje generado"></textarea>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="concepto">Generador Basico</label>
+            </div>
+            <div>
+                <textarea id="resultado_basico" rows="10" cols="50" readonly title="Resultado del personaje generado"></textarea>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+var vida = 0;
+var oro = 0;
+function actualizar_armaduras(){
+    var clase = document.getElementById("clases").value;
+    var armadura = document.getElementById("armor");
+    armadura.innerHTML = "";
+    if (clase == 1) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+    } else if (clase == 2) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+
+    } else if (clase == 3) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+        armadura.innerHTML += "<option value='7'>Armadura de cuero</option>";
+    } else if (clase == 4) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+        armadura.innerHTML += "<option value='7'>Armadura de cuero</option>";
+    } else if (clase == 5) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+        armadura.innerHTML += "<option value='7'>Armadura de cuero</option>";
+        armadura.innerHTML += "<option value='5'>Cota de malla</option>";
+    } else if (clase == 6) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+        armadura.innerHTML += "<option value='7'>Armadura de cuero</option>";
+        armadura.innerHTML += "<option value='5'>Cota de malla</option>";
+    } else if (clase == 7) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+        armadura.innerHTML += "<option value='7'>Armadura de cuero</option>";
+        armadura.innerHTML += "<option value='5'>Cota de malla</option>";
+        armadura.innerHTML += "<option value='3'>Armadura de placas</option>";
+    } else if (clase == 8) {
+        armadura.innerHTML += "<option value='9'>Sin armadura</option>";
+        armadura.innerHTML += "<option value='7'>Armadura de cuero</option>";
+        armadura.innerHTML += "<option value='5'>Cota de malla</option>";
+        armadura.innerHTML += "<option value='3'>Armadura de placas</option>";
+    }
+}
+
+function calcular_vida() {
+    var nivel = document.getElementById("nivel").value;
+    vida = 0;
+    for (var i = 0; i < nivel; i++) {
+        vida += Math.floor(Math.random() * 8) + 1; // Simula el lanzamiento de un dado de 8 caras
+    }
+    if (document.getElementById("clases").value == 3) {
+        // El nomada tiene mas vida
+        vida += Math.floor((nivel - 1) / 4) + 1;
+    }
+}
+
+function generar_oro() {
+    for (var i = 0; i < 3; i++) {
+        oro += Math.floor(Math.random() * 6) + 1;
+    }
+    oro = oro * 10;
+}
+
+function comprobar_escudo() {
+    var escudo = document.getElementById("shield").checked;
+    if (escudo) {
+        document.getElementById('weapon2_div').style.display = "none";
+    } else {
+        document.getElementById('weapon2_div').style.display = "block";
+    }
+}
+
+function generar_personaje() {
+    if (vida == 0) {
+        calcular_vida();
+        generar_oro();
+    }
+    var nombre = document.getElementById("name").value;
+    var clase = document.getElementById("clases").options[document.getElementById("clases").selectedIndex].text;
+    var armadura = document.getElementById("armor").value;
+    var movimiento = 12;
+    if (armadura == 9) {
+        movimiento = 12;
+    } else if (armadura == 7) {
+        movimiento = 9;
+    } else if (armadura == 5) {
+        movimiento = 6;
+    } else if (armadura == 3) {
+        movimiento = 3;
+    }
+    var escudo = document.getElementById("shield").checked;
+    if (escudo) {
+        armadura -= 1;
+        movimiento -= 1;
+    }
+    var armadura = parseInt(armadura);
+    var nivel = document.getElementById("nivel").value;
+    var num_ataques = Math.floor((nivel - 1) / 4) + 1;
+    var tipo_arma = "[M]";
+    if (document.getElementById("weapon1").value == 6) {
+        tipo_arma = "[R]";
+    }
+    var ataques = " D 1d4" + " [M] " + "Daga";
+    ataques += ", 1d" + (document.getElementById("weapon1").value) + " " + tipo_arma + " " + document.getElementById("weapon1").options[document.getElementById("weapon1").selectedIndex].text;
+    arma_a = "1d" + (document.getElementById("weapon1").value) + " " + tipo_arma + " " + document.getElementById("weapon1").options[document.getElementById("weapon1").selectedIndex].text;
+    if (!escudo) {
+        var tipo_arma = "[M]";
+        if (document.getElementById("weapon2").value == 6) {
+            tipo_arma = "[R]";
+        }
+        ataques += ", 1d" + (document.getElementById("weapon2").value) + " " + tipo_arma + " " + document.getElementById("weapon2").options[document.getElementById("weapon2").selectedIndex].text;
+        arma_b = "1d" + (document.getElementById("weapon2").value) + " " + tipo_arma + " " + document.getElementById("weapon2").options[document.getElementById("weapon2").selectedIndex].text;
+
+    }
+    ataques +=  ")";
+    var resultado_basico = nombre + " (CA " + armadura + " MV " + movimiento + " DG " + nivel + " PG " + vida + " #AT " + num_ataques + ataques;
+    console.log(resultado);
+
+    var resultado = "Nombre: " + nombre;
+    resultado += "\n" + "Clase: " + clase;
+    resultado += "\n" + "Nivel: " + nivel + "    Exp: ";
+    //resultado += "\n" + "Dinero: " + oro + " mo.";
+    resultado += "\n" + "Dinero: ";
+    resultado += "\n";
+    resultado += "\n" + "CA: " + armadura;
+    if (escudo) {
+        resultado += " (con escudo)";
+    }
+    resultado += "\n" +"MOV: " + movimiento;
+    resultado += "  PG: " + vida;
+    resultado += "  AT: " + num_ataques;
+    resultado += "\n";
+    resultado += "\n" + "Sigilo y Acrobacias: " + (parseInt(armadura) + parseInt(nivel));
+    if (document.getElementById("clases").value == 7) {
+        // El civilizado tiene mas salvacion
+        resultado += "\n" + "Salvación: " + (parseInt(nivel)+4+(Math.floor((nivel - 1) / 4) + 1));
+    } else {
+        resultado += "\n" + "Salvación: " + (parseInt(nivel)+4);
+    }
+    resultado += "  Magia: Lvl " + (parseInt(nivel));
+    resultado += "\n";
+    resultado += "\n" + "1d4" + " [M] " + "Daga";
+    resultado += "\n" + arma_a;
+    if (!escudo) {
+        resultado += "\n" + arma_b;
+    }
+
+    resultado += "\n";
+
+    var clase = document.getElementById("clases").value;
+    if (num_ataques > 4) {
+        num_ataques = 3;
+    }
+    if (clase == 1) {
+        resultado += "\n" + "-" + num_ataques + " Al impactar.";
+    } else if (clase == 2) {
+        resultado += "\n" +  num_ataques + "/1d4 moverse en Sigilo.";
+    } else if (clase == 3) {
+        resultado += "\n" + num_ataques + "+ 1d8 PG por Nivel.";
+    } else if (clase == 4) {
+        resultado += "\n" +  num_ataques + "/1d4 Buscar puertas secretas.";
+    } else if (clase == 5) {
+        resultado += "\n" + "+" + num_ataques + " Al daño.";
+    } else if (clase == 6) {
+        resultado += "\n" +  num_ataques + "/1d4 No perder pergaminos.";
+    } else if (clase == 7) {
+        resultado += "\n" + "+" + num_ataques + " A la salvación.";
+    } else if (clase == 8) {
+        resultado += "\n" +  num_ataques + "/1d4 Buscar trampas.";
+    }
+
+    resultado += "\n";
+
+    resultado += "\n" + "------------------------------";
+    resultado += "\n" + "1    2   3   4   5    6    7   8    9";
+    resultado += "\n" + "10 20 30 40 50 60 70 80 90";
+    
+    resultado += "\n";
+
+    resultado += "\n" + "Exploradores de lo Desconocido";
+    
+    document.getElementById("resultado").value = resultado;
+    document.getElementById("resultado_basico").value = resultado_basico;
+    
+    vida = 0;
+    oro = 0;
+}
+</script>
